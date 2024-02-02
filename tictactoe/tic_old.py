@@ -31,38 +31,40 @@ def take_turn(row, col, turn):
             board[row][col] = "O"
 
 
-def get_vector():
-    """Gets the vector for the space"""
+def get_row():
+    """Prompts the player for a row"""
+    ro = None
     while True:
-        vector = input("Enter the position you want to go (row, column): ")
-        first = vector[:1]
-        reverse = vector[::-1]
-        last = reverse[:1]
-        if first.isdigit() and last.isdigit():
-            row = int(first)
-            col = int(last)
+        player_row = input("Enter the row: ")
+        if player_row.isdigit():
+            ro = int(player_row)
+        if ro < 0 or ro > 2:
+            print("Print please enter a valid row: ")
         else:
-            print("Please enter a valid space")
+            return ro
 
-        if row < 0 or row > 2:
-            print("Please enter a valid space")
+
+def get_col():
+    """Prompts the player for a column"""
+    co = None
+    while True:
+        player_column = input("Enter the column: ")
+        if player_column.isdigit():
+            co = int(player_column)
+        if co < 0 or co > 2:
+            print("Print please enter a valid column: ")
         else:
-            if col < 0 or col > 2:
-                print("Please enter a valid space")
-            else:
-                return row, col
+            return co
 
 
 def check_win_row():
     """Checks for a win in each row"""
-    for index, _ in enumerate(board):
-        if board[index][0] == "X":
-            if (board[index][0] == board[index][1]) and board[index][1] == board[index][2]:
-                print("check row works for X")
+    for index, value in enumerate(board):
+        if value == "X":
+            if (value == board[index][1]) and board[index][1] == board[index][2]:
                 return True, "X"
-        elif board[index][0] == "O":
-            if (board[index][0] == board[index][1]) and board[index][1] == board[index][2]:
-                print("check row works for O")
+        elif value == "O":
+            if (value == board[index][1]) and board[index][1] == board[index][2]:
                 return True, "O"
 
     return False, None
@@ -102,7 +104,6 @@ def check_win():
     win_row, player_row = check_win_row()
     win_col, player_col = check_win_column()
     win_diag, player_diag = check_win_diag()
-    print(f"{win_row} row, {win_col} col, {win_diag} diag")
 
     if win_row:
         print_board()
@@ -117,6 +118,7 @@ def check_win():
         print(f"{player_diag} wins!")
         return True
 
+    # print_board()
     return False
 
 
@@ -127,7 +129,8 @@ def play_game():
     while counter < 10:
         print_board()
         while True:
-            ro, co = get_vector()
+            ro = get_row()
+            co = get_col()
             if is_available(ro, co):
                 take_turn(ro, co, player_turn)
                 player_turn += 1
@@ -136,7 +139,6 @@ def play_game():
             else:
                 print("Please enter a valid space")
         someone_won = check_win()
-        print(f"Did someone win? {someone_won}")
         if someone_won:
             break
     if not someone_won:
